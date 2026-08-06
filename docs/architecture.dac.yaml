@@ -1,0 +1,82 @@
+Diagram:
+  DefinitionFiles:
+    - Type: URL
+      Url: "https://raw.githubusercontent.com/awslabs/diagram-as-code/main/definitions/definition-for-aws-icons-light.yaml"
+
+  Resources:
+    Canvas:
+      Type: AWS::Diagram::Canvas
+      Direction: vertical
+      Align: center
+      Children:
+        - User
+        - AWSCloud
+
+    User:
+      Type: AWS::Diagram::Resource
+      Preset: User
+      Title: "Browser\nReact runs here"
+
+    AWSCloud:
+      Type: AWS::Diagram::Cloud
+      Direction: horizontal
+      Preset: AWSCloudNoLogo
+      Align: center
+      Children:
+        - FrontStack
+        - ApiStack
+
+    FrontStack:
+      Type: AWS::Diagram::VerticalStack
+      Children:
+        - CloudFront
+        - S3Bucket
+
+    CloudFront:
+      Type: AWS::CloudFront
+      Title: "1. CloudFront"
+
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Title: "S3\nReact build files"
+
+    ApiStack:
+      Type: AWS::Diagram::VerticalStack
+      Children:
+        - ApiGateway
+        - LambdaFn
+
+    ApiGateway:
+      Type: AWS::ApiGatewayV2::Api
+      Title: "2. API Gateway\nHTTP API"
+
+    LambdaFn:
+      Type: AWS::Lambda::Function
+      Title: "Lambda\nPython"
+
+  Links:
+    - Source: User
+      SourcePosition: S
+      Target: CloudFront
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+    - Source: CloudFront
+      SourcePosition: S
+      Target: S3Bucket
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+    - Source: User
+      SourcePosition: SE
+      Target: ApiGateway
+      TargetPosition: NW
+      TargetArrowHead:
+        Type: Open
+      Type: orthogonal
+    - Source: ApiGateway
+      SourcePosition: S
+      Target: LambdaFn
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
