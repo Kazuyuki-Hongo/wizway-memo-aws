@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Hello World - React + Python Lambda + API Gateway (HTTP API)
+Description: Hello World - React + Python Lambda + API Gateway + DynamoDB (items)
 
 Globals:
   Function:
@@ -22,7 +22,16 @@ Resources:
           - Content-Type
         AllowMethods:
           - GET
+          - POST
           - OPTIONS
+
+  ItemsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+      TableName: !Sub '${AWS::StackName}-items'
 
   HelloFunction:
     Type: AWS::Serverless::Function
@@ -30,7 +39,13 @@ Resources:
       FunctionName: !Sub '${AWS::StackName}-hello'
       CodeUri: backend/
       Handler: app.lambda_handler
-      Description: Hello World API
+      Description: Hello + Items API
+      Environment:
+        Variables:
+          ITEMS_TABLE: !Ref ItemsTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ItemsTable
       Events:
         HelloGet:
           Type: HttpApi
@@ -38,6 +53,18 @@ Resources:
             ApiId: !Ref HelloHttpApi
             Path: /hello
             Method: GET
+        ItemsGet:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HelloHttpApi
+            Path: /items
+            Method: GET
+        ItemsPost:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HelloHttpApi
+            Path: /items
+            Method: POST
 
   FrontendBucket:
     Type: AWS::S3::Bucket
@@ -118,11 +145,17 @@ Resources:
 
 Outputs:
   ApiUrl:
-    Description: Hello API base URL
+    Description: API base URL
     Value: !Sub 'https://${HelloHttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod'
   HelloEndpoint:
     Description: GET /hello
     Value: !Sub 'https://${HelloHttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod/hello'
+  ItemsEndpoint:
+    Description: GET/POST /items
+    Value: !Sub 'https://${HelloHttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod/items'
+  ItemsTableName:
+    Description: DynamoDB table for items
+    Value: !Ref ItemsTable
   FrontendBucketName:
     Description: S3 bucket for React build
     Value: !Ref FrontendBucket
