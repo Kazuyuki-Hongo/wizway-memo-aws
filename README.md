@@ -125,8 +125,8 @@ sam local start-api
 
 ```powershell
 curl http://127.0.0.1:3000/hello
-curl -Method POST -ContentType "application/json" -Body '{"title":"memo"}' http://127.0.0.1:3000/items
-curl http://127.0.0.1:3000/items
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:3000/items -ContentType "application/json" -Body '{"title":"memo"}'
+Invoke-RestMethod http://127.0.0.1:3000/items
 ```
 
 `sam local` 時の `/items` は **メモリ上の仮データ**（学習用）。クラウドでは DynamoDB に残る。
