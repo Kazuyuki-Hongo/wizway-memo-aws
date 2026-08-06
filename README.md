@@ -1,12 +1,17 @@
 # wizway-hello-aws
 
 ウィズウェイ実績づくり向けのサンプル。  
-**React + Python Lambda + API Gateway (HTTP API) + DynamoDB（items）**。
+お題は雑でよい、の実例として **「雑メモボード」** を載せている。
 
-待機中の実績づくりで、「要件 → 実装 → AWS デプロイ」の型を見せるための構成。
+**React + Python Lambda + API Gateway (HTTP API) + DynamoDB**
 
-- `GET /hello` … 構成とデプロイの最小確認（永続化なし）
-- `GET/POST /items` … **DynamoDB に残る**データの見本
+| 経路 | 役割 |
+|------|------|
+| `GET /hello` | 疎通確認（永続化なし） |
+| `GET/POST /items` | メモ一覧・追加（DynamoDB） |
+| `DELETE /items/{id}` | メモ削除（DynamoDB） |
+
+追加したメモは再読み込み後も残る。これが DynamoDB を入れる理由。
 
 ## 構成
 
@@ -125,8 +130,9 @@ sam local start-api
 
 ```powershell
 curl http://127.0.0.1:3000/hello
-Invoke-RestMethod -Method Post -Uri http://127.0.0.1:3000/items -ContentType "application/json" -Body '{"title":"memo"}'
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:3000/items -ContentType "application/json" -Body '{"title":"牛乳買う"}'
 Invoke-RestMethod http://127.0.0.1:3000/items
+# 削除例: Invoke-RestMethod -Method Delete -Uri http://127.0.0.1:3000/items/<id>
 ```
 
 `sam local` 時の `/items` は **メモリ上の仮データ**（学習用）。クラウドでは DynamoDB に残る。

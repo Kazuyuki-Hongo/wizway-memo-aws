@@ -1,7 +1,8 @@
 :root {
   font-family: "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
   color: #14213d;
-  background: #f8fafc;
+  background: linear-gradient(160deg, #f8fafc 0%, #eef2ff 45%, #f8fafc 100%);
+  min-height: 100%;
 }
 
 body {
@@ -10,24 +11,116 @@ body {
 
 .page {
   max-width: 40rem;
-  margin: 4rem auto;
-  padding: 0 1.5rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.hero {
+  margin-bottom: 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #64748b;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
 }
 
 h1 {
-  margin: 0 0 0.5rem;
-  font-size: 1.75rem;
+  margin: 0 0 0.75rem;
+  font-size: 2rem;
 }
 
-.label {
-  color: #64748b;
+.lead {
+  margin: 0 0 1rem;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.status {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.items h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+.item-form {
+  display: flex;
+  gap: 0.5rem;
   margin: 0 0 1rem;
 }
 
-.hello {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0 0 1.5rem;
+.item-form input {
+  flex: 1;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font: inherit;
+  background: #fff;
+}
+
+.item-form button,
+.ghost {
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.item-form button {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.item-form button:disabled,
+.ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ghost {
+  background: transparent;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.item-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.item-list li:last-child {
+  border-bottom: 0;
+}
+
+.item-list li > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.muted {
+  color: #94a3b8;
+  font-size: 0.8rem;
 }
 
 .error {
@@ -35,66 +128,8 @@ h1 {
 }
 
 .meta {
-  color: #94a3b8;
-  font-size: 0.875rem;
-  word-break: break-all;
-}
-
-.items {
-  margin: 2.5rem 0 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.items h2 {
-  margin: 0 0 0.25rem;
-  font-size: 1.25rem;
-}
-
-.item-form {
-  display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0;
-}
-
-.item-form input {
-  flex: 1;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font: inherit;
-}
-
-.item-form button {
-  padding: 0.5rem 1rem;
-  border: 0;
-  border-radius: 6px;
-  background: #1d4ed8;
-  color: #fff;
-  font: inherit;
-  cursor: pointer;
-}
-
-.item-form button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.item-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.item-list li {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.muted {
+  margin-top: 2rem;
   color: #94a3b8;
   font-size: 0.8rem;
+  word-break: break-all;
 }

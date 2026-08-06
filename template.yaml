@@ -23,6 +23,7 @@ Resources:
         AllowMethods:
           - GET
           - POST
+          - DELETE
           - OPTIONS
 
   ItemsTable:
@@ -65,6 +66,12 @@ Resources:
             ApiId: !Ref HelloHttpApi
             Path: /items
             Method: POST
+        ItemsDelete:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HelloHttpApi
+            Path: /items/{id}
+            Method: DELETE
 
   FrontendBucket:
     Type: AWS::S3::Bucket

@@ -2,9 +2,18 @@ import { useCallback, useEffect, useState } from 'react'
 
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
+function formatTime(iso) {
+  if (!iso) return ''
+  try {
+    return new Date(iso).toLocaleString('ja-JP')
+  } catch {
+    return iso
+  }
+}
+
 export default function App() {
-  const [message, setMessage] = useState('Loading...')
-  const [error, setError] = useState('')
+  const [hello, setHello] = useState('接続確認中…')
+  const [helloError, setHelloError] = useState('')
   const [items, setItems] = useState([])
   const [title, setTitle] = useState('')
   const [itemsError, setItemsError] = useState('')
@@ -12,7 +21,7 @@ export default function App() {
 
   useEffect(() => {
     if (!API_URL) {
-      setMessage('(VITE_API_URL 未設定 — ローカル確認用)')
+      setHello('VITE_API_URL 未設定')
       return
     }
 
@@ -21,8 +30,8 @@ export default function App() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         return res.json()
       })
-      .then((data) => setMessage(data.message || JSON.stringify(data)))
-      .catch((err) => setError(String(err)))
+      .then((data) => setHello(data.message || 'OK'))
+      .catch((err) => setHelloError(String(err)))
   }, [])
 
   const loadItems = useCallback(async () => {
@@ -63,20 +72,43 @@ export default function App() {
     }
   }
 
+  async function removeItem(id) {
+    if (!API_URL) return
+    setBusy(true)
+    setItemsError('')
+    try {
+      const res = await fetch(`${API_URL}/items/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      await loadItems()
+    } catch (err) {
+      setItemsError(String(err))
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
     <main className="page">
-      <h1>wizway-hello-aws</h1>
-      <p className="label">GET /hello</p>
-      {error ? <p className="error">{error}</p> : <p className="hello">{message}</p>}
+      <header className="hero">
+        <p className="eyebrow">wizway-hello-aws · サンプルお題</p>
+        <h1>雑メモボード</h1>
+        <p className="lead">
+          React（ブラウザ）→ API Gateway → Lambda → DynamoDB。
+          追加したメモは再読み込みしても残る。
+        </p>
+        <p className="status">
+          API 疎通: {helloError ? <span className="error">{helloError}</span> : hello}
+        </p>
+      </header>
 
       <section className="items">
-        <h2>Items（DynamoDB）</h2>
-        <p className="label">GET / POST /items — クラウドでは表に残る</p>
+        <h2>メモ一覧</h2>
         <form className="item-form" onSubmit={addItem}>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="タイトル"
+            placeholder="メモを書く（例: 牛乳買う）"
+            maxLength={200}
             disabled={!API_URL || busy}
           />
           <button type="submit" disabled={!API_URL || busy || !title.trim()}>
@@ -85,17 +117,27 @@ export default function App() {
         </form>
         {itemsError ? <p className="error">{itemsError}</p> : null}
         <ul className="item-list">
-          {items.length === 0 ? <li className="muted">まだありません</li> : null}
+          {items.length === 0 ? <li className="muted">まだメモがありません</li> : null}
           {items.map((item) => (
             <li key={item.id}>
-              <strong>{item.title}</strong>
-              <span className="muted">{item.createdAt}</span>
+              <div>
+                <strong>{item.title}</strong>
+                <span className="muted">{formatTime(item.createdAt)}</span>
+              </div>
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                onClick={() => removeItem(item.id)}
+              >
+                削除
+              </button>
             </li>
           ))}
         </ul>
       </section>
 
-      <p className="meta">API: {API_URL || '(unset)'}</p>
+      <p className="meta">API: {API_URL || '(unset)'} · GET/POST /items · DELETE /items/&#123;id&#125;</p>
     </main>
   )
 }
