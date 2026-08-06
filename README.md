@@ -116,15 +116,53 @@ template.yaml を正本にして:
 
 フロント同期は上記 `aws s3 sync` を続けて実行。
 
-## ローカル確認（API のみ）
+## ローカル確認（クラウドより先に）
+
+Docker Desktop を起動したうえで進める。
+
+### API
 
 ```powershell
+sam build
 sam local start-api
-# 別ターミナル
+```
+
+別ターミナル:
+
+```powershell
 curl http://127.0.0.1:3000/hello
 ```
 
+`{"message":"Hello World",...}` が返れば OK。
+
+### フロントもつなぐ
+
+`sam local` を動かしたまま:
+
+```powershell
+cd frontend
+npm ci
+```
+
+`frontend/.env.local`:
+
+```env
+VITE_API_URL=http://127.0.0.1:3000
+```
+
+```powershell
+npm run dev
+```
+
+ブラウザで表示された URL を開き、`Hello World` が出ることと、開発者ツールの Network で `/hello` が通ることを確認する。
+
+ローカルとクラウドの対応:
+
+| 手元 | クラウド |
+|------|----------|
+| `npm run dev` | CloudFront URL |
+| `sam local` の `/hello` | API Gateway の `/hello` |
+
 ## 関連
 
-- Growi: 実績づくり_AWSデプロイ環境セットアップ（React_Lambda_MCP）
-- 学習パック: `ai-utilization-pack`
+- 学習パック: https://github.com/Kazuyuki-Hongo/ai-utilization-pack （`3.実績づくり向け/04`）
