@@ -118,7 +118,16 @@ template.yaml を正本にして:
 
 ## ローカル確認（クラウドより先に）
 
-Docker Desktop を起動したうえで進める。
+Docker Desktop を起動したうえで進める（`sam local` がコンテナで Lambda 相当を動かすため）。
+
+Windows の導入例:
+
+```powershell
+winget install -e --id Docker.DockerDesktop
+```
+
+参考: https://docs.docker.com/desktop/setup/install/windows-install/  
+学習パックの手順: https://github.com/Kazuyuki-Hongo/ai-utilization-pack （`3.実績づくり向け/04` §5.2）
 
 ### API
 
