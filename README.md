@@ -13,6 +13,14 @@
 
 追加したメモは再読み込み後も残る。これが DynamoDB を入れる理由。
 
+## 動いている画面（デプロイ済み）
+
+- フロント: https://d25bl1xmuu0yux.cloudfront.net
+- API（items）: https://3k3bug5qo8.execute-api.ap-northeast-1.amazonaws.com/prod/items
+- API（hello）: https://3k3bug5qo8.execute-api.ap-northeast-1.amazonaws.com/prod/hello
+
+実績づくり用サンドボックス。中身は架空メモのみ。
+
 ## 構成
 
 ```
