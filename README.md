@@ -1,54 +1,47 @@
 # wizway-memo-aws
 
-ウィズウェイ実績づくり向けのサンプル。  
-お題例: **雑メモボード**（DynamoDB で残るデータ）。
-
+ウィズウェイ実績づくり向けのサンプル、E 
+お題侁E **雑メモボ�EチE*�E�EynamoDB で残るチE�Eタ�E�、E
 **React + Python Lambda + API Gateway (HTTP API) + DynamoDB**
 
 | 経路 | 役割 |
 |------|------|
-| `GET /hello` | 疎通確認 |
-| `GET/POST /items` | メモ一覧・追加（DynamoDB） |
-| `DELETE /items/{id}` | メモ削除（DynamoDB） |
+| `GET /hello` | 疎通確誁E|
+| `GET/POST /items` | メモ一覧・追加�E�EynamoDB�E�E|
+| `DELETE /items/{id}` | メモ削除�E�EynamoDB�E�E|
 
-構成・デプロイだけの最小 Hello は別リポジトリ:  
+構�E・チE�Eロイだけ�E最封EHello は別リポジトリ:  
 https://github.com/Kazuyuki-Hongo/wizway-hello-aws
 
-## 動いている画面（デプロイ済み）
-
-デプロイ後に README を更新する（スタック名: `wizway-memo-aws`）。
-
-## 構成
+## 動いてぁE��画面�E�デプロイ済み�E�E
+チE�Eロイ後に README を更新する�E�スタチE��吁E `wizway-memo-aws`�E�、E
+## 構�E
 
 ```
 backend/          Python Lambda (/hello, /items)
-frontend/         React (Vite) — 雑メモボード
-template.yaml     SAM (HTTP API + DynamoDB + S3 + CloudFront)
-samconfig.toml    デプロイ設定 (ap-northeast-1 / stack: wizway-memo-aws)
+frontend/         React (Vite)  E雑メモボ�EチEtemplate.yaml     SAM (HTTP API + DynamoDB + S3 + CloudFront)
+samconfig.toml    チE�Eロイ設宁E(ap-northeast-1 / stack: wizway-memo-aws)
 .cursor/mcp.json  AWS Serverless MCP (profile=deploy)
-docs/             構成図
+docs/             構�E図
 ```
 
-### 構成図
+### 構�E図
 
 ![AWS architecture](docs/images/hello-architecture.png)
 
-- 左（CloudFront → S3）＝画面ファイルの配信
-- 右（API Gateway → Lambda）＝ブラウザ上の React が呼ぶ API
-- **残るデータ**は Lambda → **DynamoDB**（`/items`）
-
+- 左�E�EloudFront ↁES3�E�＝画面ファイルの配信
+- 右�E�EPI Gateway ↁELambda�E�＝ブラウザ上�E React が呼ぶ API
+- **残るチE�Eタ**は Lambda ↁE**DynamoDB**�E�E/items`�E�E
 ## 前提
 
 - AWS CLI / SAM CLI / Node.js / uv
-- IAM Identity Center の `deploy` profile（Deployer。DynamoDB 含む）
-
+- IAM Identity Center の `deploy` profile�E�Eeployer、EynamoDB 含む�E�E
 ```powershell
 aws sso login --profile deploy
 aws sts get-caller-identity --profile deploy
 ```
 
-## デプロイ手順
-
+## チE�Eロイ手頁E
 ### 1. API + 基盤
 
 ```powershell
@@ -58,8 +51,7 @@ sam deploy --profile deploy
 
 Outputs: `ApiUrl` / `ItemsEndpoint` / `ItemsTableName` / `FrontendBucketName` / `FrontendUrl` / `CloudFrontDistributionId`
 
-### 2. フロント
-
+### 2. フロンチE
 `frontend/.env.production`:
 
 ```env
@@ -74,18 +66,16 @@ aws s3 sync dist/ s3://<FrontendBucketName>/ --delete --profile deploy
 aws cloudfront create-invalidation --distribution-id <CloudFrontDistributionId> --paths "/*" --profile deploy
 ```
 
-## ローカル確認
-
-Docker Desktop 起動後:
+## ローカル確誁E
+Docker Desktop 起動征E
 
 ```powershell
 sam build
 sam local start-api
 ```
 
-`sam local` 時の `/items` はメモリ仮データ。クラウドでは DynamoDB。
-
+`sam local` 時�E `/items` はメモリ仮チE�Eタ。クラウドでは DynamoDB、E
 ## 関連
 
 - Hello のみ: https://github.com/Kazuyuki-Hongo/wizway-hello-aws
-- 学習パック: https://github.com/Kazuyuki-Hongo/ai-utilization-pack （`04` / `06` / `07`）
+- 学習パチE��: https://github.com/Kazuyuki-Hongo/ai-utilization-pack �E�E04` / `06` / `07`�E�E
