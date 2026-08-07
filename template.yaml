@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Hello World - React + Python Lambda + API Gateway + DynamoDB (items)
+Description: 雑メモボード - React + Python Lambda + API Gateway + DynamoDB
 
 Globals:
   Function:

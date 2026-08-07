@@ -97,7 +97,7 @@ def lambda_handler(event, context):
             200,
             {
                 "message": "Hello World",
-                "service": "wizway-hello-aws",
+                "service": "wizway-memo-aws",
                 "app": "雑メモボード（サンプル）",
             },
         )

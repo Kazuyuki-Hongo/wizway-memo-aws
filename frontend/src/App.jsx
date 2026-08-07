@@ -90,7 +90,7 @@ export default function App() {
   return (
     <main className="page">
       <header className="hero">
-        <p className="eyebrow">wizway-hello-aws · サンプルお題</p>
+        <p className="eyebrow">wizway-memo-aws · サンプルお題</p>
         <h1>雑メモボード</h1>
         <p className="lead">
           React（ブラウザ）→ API Gateway → Lambda → DynamoDB。
