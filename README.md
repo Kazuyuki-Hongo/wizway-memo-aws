@@ -3,7 +3,7 @@
 ウィズウェイ実績づくり向けのサンプル。  
 お題例: **雑メモボード**（DynamoDB でデータが残る）。
 
-**React + Python Lambda + API Gateway (HTTP API) + DynamoDB**
+**React + TypeScript + Python Lambda + API Gateway (HTTP API) + DynamoDB**
 
 | 経路 | 役割 |
 |------|------|
@@ -24,7 +24,7 @@ https://github.com/Kazuyuki-Hongo/wizway-hello-aws
 
 ```
 backend/          Python Lambda (/hello, /items)
-frontend/         React (Vite) — メモ画面
+frontend/         React + TypeScript (Vite) — メモ画面
 template.yaml     SAM (HTTP API + DynamoDB + S3 + CloudFront)
 samconfig.toml    デプロイ設定 (ap-northeast-1 / stack: wizway-memo-aws)
 .cursor/mcp.json  AWS Serverless MCP (profile=deploy)
@@ -36,7 +36,7 @@ docs/             構成図
 ![AWS architecture](docs/images/hello-architecture.png)
 
 - 静的配信: CloudFront → S3（フロント）
-- API: API Gateway → Lambda。画面の React がこの API を呼ぶ
+- API: API Gateway → Lambda。画面の React（TypeScript）がこの API を呼ぶ
 - **データが残る理由**: Lambda が **DynamoDB**（`/items`）に読み書きする
 
 ## 前提

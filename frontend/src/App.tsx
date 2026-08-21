@@ -1,8 +1,22 @@
-import { useCallback, useEffect, useState } from 'react'
+import { FormEvent, useCallback, useEffect, useState } from 'react'
 
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
-function formatTime(iso) {
+type HelloResponse = {
+  message?: string
+}
+
+type MemoItem = {
+  id: string
+  title: string
+  createdAt?: string
+}
+
+type ItemsResponse = {
+  items?: MemoItem[]
+}
+
+function formatTime(iso: string | undefined) {
   if (!iso) return ''
   try {
     return new Date(iso).toLocaleString('ja-JP')
@@ -14,7 +28,7 @@ function formatTime(iso) {
 export default function App() {
   const [hello, setHello] = useState('接続確認中…')
   const [helloError, setHelloError] = useState('')
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState<MemoItem[]>([])
   const [title, setTitle] = useState('')
   const [itemsError, setItemsError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -28,10 +42,10 @@ export default function App() {
     fetch(`${API_URL}/hello`)
       .then(async (res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        return res.json()
+        return res.json() as Promise<HelloResponse>
       })
       .then((data) => setHello(data.message || 'OK'))
-      .catch((err) => setHelloError(String(err)))
+      .catch((err: unknown) => setHelloError(String(err)))
   }, [])
 
   const loadItems = useCallback(async () => {
@@ -40,9 +54,9 @@ export default function App() {
     try {
       const res = await fetch(`${API_URL}/items`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const data = await res.json()
+      const data = (await res.json()) as ItemsResponse
       setItems(data.items || [])
-    } catch (err) {
+    } catch (err: unknown) {
       setItemsError(String(err))
     }
   }, [])
@@ -51,7 +65,7 @@ export default function App() {
     loadItems()
   }, [loadItems])
 
-  async function addItem(e) {
+  async function addItem(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (!API_URL || !title.trim()) return
     setBusy(true)
@@ -65,14 +79,14 @@ export default function App() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       setTitle('')
       await loadItems()
-    } catch (err) {
+    } catch (err: unknown) {
       setItemsError(String(err))
     } finally {
       setBusy(false)
     }
   }
 
-  async function removeItem(id) {
+  async function removeItem(id: string) {
     if (!API_URL) return
     setBusy(true)
     setItemsError('')
@@ -80,7 +94,7 @@ export default function App() {
       const res = await fetch(`${API_URL}/items/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       await loadItems()
-    } catch (err) {
+    } catch (err: unknown) {
       setItemsError(String(err))
     } finally {
       setBusy(false)
@@ -93,7 +107,7 @@ export default function App() {
         <p className="eyebrow">wizway-memo-aws · サンプルお題</p>
         <h1>雑メモボード</h1>
         <p className="lead">
-          React（ブラウザ）→ API Gateway → Lambda → DynamoDB。
+          React（TypeScript）→ API Gateway → Lambda → DynamoDB。
           追加したメモは再読み込みしても残る。
         </p>
         <p className="status">
