@@ -5,8 +5,6 @@ import uuid
 from datetime import datetime, timezone
 from decimal import Decimal
 
-import boto3
-
 CORS_HEADERS = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
@@ -14,9 +12,15 @@ CORS_HEADERS = {
     "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
 }
 
-# sam local では本物の DynamoDB の代わりにメモリを使う（学習用）
+# sam local、または環境変数 ITEMS_TABLE が無いときは、DynamoDB の代わりにメモリを使う（学習用）。
+# プロセスが終わると内容は消える。
 _LOCAL_ITEMS: list[dict] = []
 _ITEM_PATH = re.compile(r"/items/([^/]+)$")
+_MARKER_UNSAFE = re.compile(r"[^A-Za-z0-9_-]")
+
+
+class DemoError(Exception):
+    """演習用。CloudWatch に traceback を残すために、ハンドラの外まではキャッチしない。"""
 
 
 def _response(status_code: int, body: dict | list):
@@ -43,11 +47,28 @@ def _method(event) -> str:
     return (http.get("method") or event.get("httpMethod") or "GET").upper()
 
 
+def _marker(event) -> str:
+    params = event.get("queryStringParameters") or {}
+    raw = str(params.get("marker") or "")
+    cleaned = _MARKER_UNSAFE.sub("", raw)[:40]
+    return cleaned or "demo"
+
+
+def _raise_demo_error(event) -> None:
+    marker = _marker(event)
+    print(f"demo-error marker={marker} path=/demo/error")
+    raise DemoError(f"演習用の未処理エラーです marker={marker}")
+
+
 def _use_local_store() -> bool:
     return bool(os.environ.get("AWS_SAM_LOCAL")) or not os.environ.get("ITEMS_TABLE")
 
 
 def _table():
+    # DynamoDB を使うときだけ読み込む。Lambda には boto3 が入っている。
+    # ローカルのメモリ保存（ITEMS_TABLE 未設定 / sam local）では boto3 は不要。
+    import boto3
+
     return boto3.resource("dynamodb").Table(os.environ["ITEMS_TABLE"])
 
 
@@ -91,6 +112,9 @@ def lambda_handler(event, context):
 
     if method == "OPTIONS":
         return _response(200, {"ok": True})
+
+    if path.rstrip("/").endswith("/demo/error") and method == "GET":
+        _raise_demo_error(event)
 
     if path.endswith("/hello") and method == "GET":
         return _response(

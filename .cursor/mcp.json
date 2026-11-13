@@ -7,13 +7,11 @@
         "run",
         "--from",
         "awslabs.aws-serverless-mcp-server@latest",
-        "awslabs.aws-serverless-mcp-server.exe",
-        "--allow-write",
-        "--allow-sensitive-data-access"
+        "awslabs.aws-serverless-mcp-server.exe"
       ],
       "env": {
         "FASTMCP_LOG_LEVEL": "ERROR",
-        "AWS_PROFILE": "deploy",
+        "AWS_PROFILE": "<自分のプロファイル名>",
         "AWS_REGION": "ap-northeast-1"
       }
     }

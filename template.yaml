@@ -72,6 +72,12 @@ Resources:
             ApiId: !Ref HelloHttpApi
             Path: /items/{id}
             Method: DELETE
+        DemoErrorGet:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HelloHttpApi
+            Path: /demo/error
+            Method: GET
 
   FrontendBucket:
     Type: AWS::S3::Bucket
@@ -160,6 +166,9 @@ Outputs:
   ItemsEndpoint:
     Description: GET/POST /items
     Value: !Sub 'https://${HelloHttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod/items'
+  DemoErrorEndpoint:
+    Description: GET /demo/error（演習用。未処理エラーを CloudWatch に残す）
+    Value: !Sub 'https://${HelloHttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod/demo/error'
   ItemsTableName:
     Description: DynamoDB table for items
     Value: !Ref ItemsTable
