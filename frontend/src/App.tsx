@@ -4,6 +4,8 @@ const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
 type HelloResponse = {
   message?: string
+  service?: string
+  app?: string
 }
 
 type MemoItem = {
@@ -35,7 +37,7 @@ export default function App() {
 
   useEffect(() => {
     if (!API_URL) {
-      setHello('VITE_API_URL 未設定')
+      setHello('(VITE_API_URL 未設定 — ローカル確認用)')
       return
     }
 
@@ -108,7 +110,7 @@ export default function App() {
         <h1>雑メモボード</h1>
         <p className="lead">
           React（TypeScript）→ API Gateway → Lambda → DynamoDB。
-          追加したメモは再読み込みしても残る。
+          追加したメモは、サーバーが動いているあいだは再読み込みしても残る。クラウドでは DynamoDB に残る。
         </p>
         <p className="status">
           API 疎通: {helloError ? <span className="error">{helloError}</span> : hello}

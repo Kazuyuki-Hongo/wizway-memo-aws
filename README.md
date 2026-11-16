@@ -1,6 +1,6 @@
 # wizway-memo-aws
 
-ウィズウェイ実績づくり向けのサンプル。  
+実績づくり向けのサンプル。  
 お題例: **雑メモボード**（DynamoDB でデータが残る）。
 
 **React + TypeScript + Python Lambda + API Gateway (HTTP API) + DynamoDB**
@@ -44,7 +44,7 @@ AWS Serverless MCP（AWS のデプロイ操作を Agent から使えるように
 
 ### 構成図
 
-![AWS architecture](docs/images/hello-architecture.png)
+![AWS architecture](docs/images/memo-architecture.png)
 
 - 静的配信: CloudFront → S3（フロント）
 - API: API Gateway → Lambda。画面の React（TypeScript）がこの API を呼ぶ
@@ -53,11 +53,11 @@ AWS Serverless MCP（AWS のデプロイ操作を Agent から使えるように
 ## 前提
 
 - AWS CLI / SAM CLI / Node.js / uv
-- IAM Identity Center の `deploy` profile（Deployer。DynamoDB 権限が必要）
+- IAM Identity Center でサインインするプロファイル（DynamoDB の権限が要る）。プロファイル名は自分で付ける
 
 ```powershell
-aws sso login --profile deploy
-aws sts get-caller-identity --profile deploy
+aws sso login --profile <自分のプロファイル名>
+aws sts get-caller-identity --profile <自分のプロファイル名>
 ```
 
 ## デプロイ手順
@@ -66,7 +66,7 @@ aws sts get-caller-identity --profile deploy
 
 ```powershell
 sam build
-sam deploy --profile deploy
+sam deploy --profile <自分のプロファイル名>
 ```
 
 Outputs: `ApiUrl` / `ItemsEndpoint` / `ItemsTableName` / `FrontendBucketName` / `FrontendUrl` / `CloudFrontDistributionId`
@@ -83,8 +83,8 @@ VITE_API_URL=https://xxxx.execute-api.ap-northeast-1.amazonaws.com/prod
 cd frontend
 npm ci
 npm run build
-aws s3 sync dist/ s3://<FrontendBucketName>/ --delete --profile deploy
-aws cloudfront create-invalidation --distribution-id <CloudFrontDistributionId> --paths "/*" --profile deploy
+aws s3 sync dist/ s3://<FrontendBucketName>/ --delete --profile <自分のプロファイル名>
+aws cloudfront create-invalidation --distribution-id <CloudFrontDistributionId> --paths "/*" --profile <自分のプロファイル名>
 ```
 
 ## ローカル確認
@@ -159,6 +159,7 @@ EOF
 ```
 
 `/hello` で `message` と `service` が見え、追加したメモが `/items` の一覧に出れば完了です。メモはこのコマンドを実行している間のメモリ上にだけあり、終了すると消えます。この方法では API の URL は出ないので、フロントは表示できません。画面まで確認したいときは Docker を使う方法で進めます。
+Docker が無いときの画面の確認は、学習パックのコースC 05（Playwright）の『Docker が無いとき』の方法を使う。
 
 ### フロント
 
@@ -169,7 +170,7 @@ Windows（PowerShell）:
 ```powershell
 cd frontend
 npm ci
-# .env.local に VITE_API_URL=http://127.0.0.1:3000
+Set-Content -Path .env.local -Value "VITE_API_URL=<表示された API の URL>"
 npm run dev
 ```
 
@@ -178,7 +179,7 @@ Linux / macOS:
 ```bash
 cd frontend
 npm ci
-export VITE_API_URL=http://127.0.0.1:3000
+echo "VITE_API_URL=<表示された API の URL>" > .env.local
 npm run dev
 ```
 
