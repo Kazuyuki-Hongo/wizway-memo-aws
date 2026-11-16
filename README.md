@@ -187,4 +187,6 @@ npm run dev
 ## 関連
 
 - Hello 専用: https://github.com/Kazuyuki-Hongo/wizway-hello-aws
-- 学習パック: https://github.com/Kazuyuki-Hongo/ai-utilization-pack （`04` / `06` / `07`）
+- 学習パック（ページの位置は同じ。案内された入口を開く）
+  - ウィズウェイ: https://github.com/Kazuyuki-Hongo/ai-utilization-pack （`04` / `06` / `07`）
+  - それ以外のグループ会社: https://github.com/Kazuyuki-Hongo/ai-utilization-pack-common （`04` / `06` / `07`）
