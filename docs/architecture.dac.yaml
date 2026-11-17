@@ -45,6 +45,7 @@ Diagram:
       Children:
         - ApiGateway
         - LambdaFn
+        - DynamoTable
 
     ApiGateway:
       Type: AWS::ApiGatewayV2::Api
@@ -53,6 +54,10 @@ Diagram:
     LambdaFn:
       Type: AWS::Lambda::Function
       Title: "Lambda\nPython"
+
+    DynamoTable:
+      Type: AWS::DynamoDB::Table
+      Title: "3. DynamoDB\nItems"
 
   Links:
     - Source: User
@@ -77,6 +82,12 @@ Diagram:
     - Source: ApiGateway
       SourcePosition: S
       Target: LambdaFn
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+    - Source: LambdaFn
+      SourcePosition: S
+      Target: DynamoTable
       TargetPosition: N
       TargetArrowHead:
         Type: Open
